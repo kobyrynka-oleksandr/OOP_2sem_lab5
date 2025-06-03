@@ -42,13 +42,13 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <Button Width="25" Height="25" Background="Transparent" BorderBrush="DarkOrange" Content="⮜" Foreground="DarkOrange" Grid.Column="0" Margin="5,0,0,0"/>
+                <Button Click="ReduceBetButton_Click" Width="25" Height="25" Background="Transparent" BorderBrush="DarkOrange" Content="⮜" Foreground="DarkOrange" Grid.Column="0" Margin="5,0,0,0"/>
 
                 <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <TextBlock x:Name="Bet" FontSize="15" Text="0$" Foreground="DarkOrange"/>
                 </StackPanel>
 
-                <Button Width="25" Height="25" Background="Transparent" BorderBrush="DarkOrange" Content="⮞" Foreground="DarkOrange" Grid.Column="2" Margin="0,0,5,0"/>
+                <Button Click="RaiseBetButton_Click" Width="25" Height="25" Background="Transparent" BorderBrush="DarkOrange" Content="⮞" Foreground="DarkOrange" Grid.Column="2" Margin="0,0,5,0"/>
             </Grid>
 
             <TextBlock Grid.Row="5" Text="Bet on the horse"  Foreground="DimGray" HorizontalAlignment="Center" Margin="0,10"/>
@@ -60,18 +60,18 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <Button Width="25" Height="25" Background="Transparent" BorderBrush="DarkOrange" Content="⮜" Foreground="DarkOrange" Grid.Column="0" Margin="5,0,0,0"/>
+                <Button Click="PreviousHorseButton_Click" Width="25" Height="25" Background="Transparent" BorderBrush="DarkOrange" Content="⮜" Foreground="DarkOrange" Grid.Column="0" Margin="5,0,0,0"/>
 
                 <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <TextBlock x:Name="ChosenHorse" FontSize="15" Text="1. Lucky" Foreground="DarkOrange"/>
                 </StackPanel>
 
-                <Button Width="25" Height="25" Background="Transparent" BorderBrush="DarkOrange" Content="⮞" Foreground="DarkOrange" Grid.Column="2" Margin="0,0,5,0"/>
+                <Button Click="NextHorseButton_Click" Width="25" Height="25" Background="Transparent" BorderBrush="DarkOrange" Content="⮞" Foreground="DarkOrange" Grid.Column="2" Margin="0,0,5,0"/>
             </Grid>
 
             <Rectangle Height="1" Fill="DarkOrange" Grid.Row="7" HorizontalAlignment="Stretch" Margin="0,10"/>
 
-            <Button Grid.Row="8" Width="100" Height="30" Background="Transparent" BorderBrush="Black" Content="BET" FontSize="15" FontWeight="Medium"/>
+            <Button Click="BetButton_Click" Grid.Row="8" Width="100" Height="30" Background="Transparent" BorderBrush="Black" Content="BET" FontSize="15" FontWeight="Medium"/>
         </Grid>
 
         <Grid Grid.Column="1" Margin="10">
@@ -83,24 +83,26 @@
 
             <Border BorderBrush="Black" BorderThickness="2" Grid.Row="0" Background="LightGray">
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
-                    <Canvas x:Name="RaceCanvas" Height="400" Background="White" />
+                    <Canvas x:Name="RaceCanvas" Height="400" Background="White">
+                        <Image Height="400" x:Name="TrackBackground" Source="/Images/Background/Track.png" Canvas.Left="0" Canvas.Top="0" Stretch="Fill"/>
+                    </Canvas>
                 </ScrollViewer>
             </Border>
 
             <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10">
-                <Button x:Name="StartRaceButton" Content="Start Race" Width="100" Margin="10" Background="Transparent" BorderBrush="DarkOrange" Foreground="DarkOrange"/>
+                <Button Click="StartRaceButton_Click" x:Name="StartRaceButton" Content="Start Race" Width="100" Margin="10" Background="Transparent" BorderBrush="DarkOrange" Foreground="DarkOrange"/>
 
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0">
                     <TextBlock Text="Horses:" VerticalAlignment="Center" Margin="0,0,5,0"/>
                     <ComboBox x:Name="HorseCountComboBox" Width="60" SelectedIndex="0" BorderBrush="DarkOrange" Foreground="DarkOrange">
+                        <ComboBoxItem Content="2"/>
                         <ComboBoxItem Content="3"/>
                         <ComboBoxItem Content="4"/>
                         <ComboBoxItem Content="5"/>
-                        <ComboBoxItem Content="6"/>
                     </ComboBox>
                 </StackPanel>
 
-                <Button x:Name="SwitchCameraButton" Content="Switch Camera" Width="120" Margin="10" Background="Transparent" BorderBrush="DarkOrange" Foreground="DarkOrange"/>
+                <Button Click="SwitchCameraButton_Click" x:Name="SwitchCameraButton" Content="Switch Camera" Width="120" Margin="10" Background="Transparent" BorderBrush="DarkOrange" Foreground="DarkOrange"/>
 
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
                     <TextBlock Text="Race Progress:" VerticalAlignment="Center" Margin="0,0,10,0"/>
