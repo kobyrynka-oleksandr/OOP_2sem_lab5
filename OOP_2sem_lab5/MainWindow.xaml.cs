@@ -54,11 +54,11 @@ namespace OOP_2sem_lab5
             int horseCount = int.Parse(((ComboBoxItem)HorseCountComboBox.SelectedItem).Content.ToString());
             var allHorses = new List<Horse>
             {
-                new Horse("Bolt", Colors.Red, horseCount / 1.5),
-                new Horse("Storm", Colors.Blue, horseCount / 1.5),
-                new Horse("Shadow", Colors.Green, horseCount / 1.5),
-                new Horse("Blaze", Colors.Orange, horseCount / 1.5),
-                new Horse("Thunder", Colors.Purple, horseCount / 1.5)
+                new Horse("Bolt", Colors.Red, horseCount / 1.8),
+                new Horse("Storm", Colors.Blue, horseCount / 1.8),
+                new Horse("Shadow", Colors.Green, horseCount / 1.8),
+                new Horse("Blaze", Colors.Orange, horseCount / 1.8),
+                new Horse("Thunder", Colors.Purple, horseCount / 1.8)
             };
             for (int i = 0; i < horseCount; i++)
             {
@@ -183,7 +183,10 @@ namespace OOP_2sem_lab5
                 MessageBox.Show($"Winner: {winner.Name}\nYou won: ${payout}");
 
                 placedBets.Clear();
-
+                for (int i = 0; i < sorted.Count; i++)
+                {
+                    sorted[i].FixedPosition = i + 1;
+                }
                 foreach (var horse in horses)
                 {
                     FindNewCoefficient(horse);
