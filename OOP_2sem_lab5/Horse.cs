@@ -19,10 +19,11 @@ namespace OOP_2sem_lab5
         private double acceleration;
 
         public double Position { get; private set; }
+        public int? FixedPosition { get; set; } = null;
         public Image HorseImageControl { get; set; }
         public string Name { get; }
         public Color Color { get; }
-        public double Speed { get; }
+        public double Speed { get; private set; }
         public TimeSpan RaceTime { get; private set; }
         public int PositionOnTrack => (int)Position;
         public double Coefficient { get; set; }
@@ -31,12 +32,12 @@ namespace OOP_2sem_lab5
         public bool HasFinished { get; set; }
         public double FinishTime { get; set; } = 0;
 
-        public Horse(string name, Color color)
+        public Horse(string name, Color color, double coefficient)
         {
             Name = name;
             Color = color;
             Speed = RandomGen.NextDouble() * 5 + 5; 
-            Coefficient = Math.Round(2 + RandomGen.NextDouble() * 2, 2); 
+            Coefficient = Math.Round(coefficient, 2);
             animationFrames = HorseImageHelper.GetHorseAnimation(color);
         }
 
@@ -47,29 +48,39 @@ namespace OOP_2sem_lab5
 
         public async Task RunAsync(double finishLine, Stopwatch timer, CancellationToken token)
         {
-            var start = timer.Elapsed;
-
             while (Position < finishLine)
             {
-                if (token.IsCancellationRequested) break;
+                token.ThrowIfCancellationRequested();
 
                 double factor = RandomGen.NextDouble() * 0.3 + 0.7;
                 acceleration = Speed * factor;
                 Position += acceleration;
                 currentFrame++;
-                await Task.Delay(100, token);
+
+                RaceTime = timer.Elapsed;
+
+                if (Position >= finishLine && !HasFinished)
+                {
+                    Position = finishLine;
+                    RaceTime = timer.Elapsed;
+                    FinishTime = RaceTime.TotalSeconds;
+                    HasFinished = true;
+                }
+
+                await Task.Delay(75, token);
             }
-
-
-            RaceTime = timer.Elapsed - start;
         }
 
         public void Reset()
         {
             Position = 0;
-            currentFrame = 0;
+            HasFinished = false;
+            FinishTime = 0;
             RaceTime = TimeSpan.Zero;
+            currentFrame = 0;
+            FixedPosition = null;
             MoneyWon = 0;
+            Speed = RandomGen.NextDouble() * 5 + 5;
         }
     }
 }
