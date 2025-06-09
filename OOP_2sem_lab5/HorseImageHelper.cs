@@ -22,7 +22,6 @@ namespace OOP_2sem_lab5
             if (animationCache.TryGetValue(color, out var cachedAnimation))
                 return cachedAnimation;
 
-            // Створюємо анімацію для нового кольору
             var animation = new List<ImageSource>(FrameCount);
             for (int i = 0; i < FrameCount; i++)
             {
