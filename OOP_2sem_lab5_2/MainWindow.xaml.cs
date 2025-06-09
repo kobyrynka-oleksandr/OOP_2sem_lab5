@@ -21,7 +21,7 @@ namespace OOP_2sem_lab5_2
         private List<Point> sites = new List<Point>();
         private RenderTargetBitmap voronoiBitmap;
         private bool multiThreaded = false;
-        private int threadCount = 4;
+        private int threadCount = Environment.ProcessorCount;
         private readonly object drawLock = new object();
         private Dictionary<Point, Color> siteColors = new Dictionary<Point, Color>();
 
@@ -93,7 +93,10 @@ namespace OOP_2sem_lab5_2
 
         private void RunVoronoiSingleThreaded()
         {
-            var sw = Stopwatch.StartNew();
+            var stopwatch = Stopwatch.StartNew();
+            var cpuStartTime = Process.GetCurrentProcess().TotalProcessorTime;
+            long memoryBefore = GC.GetTotalMemory(true);
+
             int width = (int)canvas.Width;
             int height = (int)canvas.Height;
 
@@ -104,7 +107,8 @@ namespace OOP_2sem_lab5_2
                 {
                     for (int x = 0; x < width; x++)
                     {
-                        var nearest = sites.OrderBy(p => Distance(p, new Point(x, y))).FirstOrDefault();
+                        Point pt = new Point(x, y);
+                        var nearest = GetNearestSite(pt);
                         var color = GetColorForSite(nearest);
                         Brush brush = new SolidColorBrush(color);
                         dc.DrawRectangle(brush, null, new Rect(x, y, 1, 1));
@@ -116,13 +120,22 @@ namespace OOP_2sem_lab5_2
             voronoiBitmap.Render(visual);
             canvas.Background = new ImageBrush(voronoiBitmap);
 
-            sw.Stop();
-            textBlockTime.Text = $"Однопотоково: {sw.ElapsedMilliseconds} мс";
+            stopwatch.Stop();
+            var cpuEndTime = Process.GetCurrentProcess().TotalProcessorTime;
+            long memoryAfter = GC.GetTotalMemory(true);
+
+            textBlockTime.Text = $"Однопотоково:\n" +
+                                 $"- Реальний час: {stopwatch.ElapsedMilliseconds} мс\n" +
+                                 $"- Процесорний час: {(cpuEndTime - cpuStartTime).TotalMilliseconds:F1} мс\n" +
+                                 $"- Спожито пам’яті: {(memoryAfter - memoryBefore) / 1024.0:F1} КБ";
         }
 
         private void RunVoronoiMultiThreaded()
         {
-            var sw = Stopwatch.StartNew();
+            var stopwatch = Stopwatch.StartNew();
+            var cpuStartTime = Process.GetCurrentProcess().TotalProcessorTime;
+            long memoryBefore = GC.GetTotalMemory(true);
+
             int width = (int)canvas.Width;
             int height = (int)canvas.Height;
             int stride = width * 4;
@@ -137,7 +150,8 @@ namespace OOP_2sem_lab5_2
                 {
                     for (int x = 0; x < width; x++)
                     {
-                        var nearest = sites.OrderBy(p => Distance(p, new Point(x, y))).FirstOrDefault();
+                        Point pt = new Point(x, y);
+                        var nearest = GetNearestSite(pt);
                         var color = GetColorForSite(nearest);
                         int index = y * stride + x * 4;
 
@@ -162,12 +176,22 @@ namespace OOP_2sem_lab5_2
             voronoiBitmap.Render(visual);
             canvas.Background = new ImageBrush(voronoiBitmap);
 
-            sw.Stop();
-            textBlockTime.Text = $"Багатопотоково ({threadCount} потоків): {sw.ElapsedMilliseconds} мс";
+            stopwatch.Stop();
+            var cpuEndTime = Process.GetCurrentProcess().TotalProcessorTime;
+            long memoryAfter = GC.GetTotalMemory(true);
+
+            textBlockTime.Text = $"Багатопотоково ({threadCount} потоків):\n" +
+                                 $"- Реальний час: {stopwatch.ElapsedMilliseconds} мс\n" +
+                                 $"- Процесорний час: {(cpuEndTime - cpuStartTime).TotalMilliseconds:F1} мс\n" +
+                                 $"- Спожито пам’яті: {(memoryAfter - memoryBefore) / 1024.0:F1} КБ";
         }
 
-        private double Distance(Point a, Point b) =>
-            (a.X - b.X) * (a.X - b.X) + (a.Y - b.Y) * (a.Y - b.Y);
+        private double Distance(Point a, Point b)
+        {
+            double dx = a.X - b.X;
+            double dy = a.Y - b.Y;
+            return dx * dx + dy * dy;
+        }
 
         private Color GetColorForSite(Point p) =>
             siteColors.ContainsKey(p) ? siteColors[p] : Colors.Gray;
@@ -194,6 +218,23 @@ namespace OOP_2sem_lab5_2
                 Canvas.SetTop(ellipse, p.Y - 3);
                 canvas.Children.Add(ellipse);
             }
+        }
+        private Point GetNearestSite(Point pt)
+        {
+            double minDist = double.MaxValue;
+            Point nearest = default;
+
+            foreach (var site in sites)
+            {
+                double d = Distance(site, pt);
+                if (d < minDist)
+                {
+                    minDist = d;
+                    nearest = site;
+                }
+            }
+
+            return nearest;
         }
     }
 }
