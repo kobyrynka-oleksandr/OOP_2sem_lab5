@@ -19,6 +19,7 @@
             <TextBox x:Name="NumOfPoints"/>
             <Button Content="Генерувати" Click="BtnGenerateRandom_Click"/>
             <Button Content="Побудувати" Click="BtnVoronoi_Click"/>
+            <Button Content="Вилучити 10% найменших" Click="BtnRemoveSmallest_Click"/>
             <CheckBox Content="Багатопотоковість" Checked="CheckBoxMultiThread_Checked" Unchecked="CheckBoxMultiThread_Unchecked"/>
             <TextBlock Name="textBlockTime" Margin="0,10,0,0" FontWeight="Bold" TextWrapping="Wrap"/>
         </StackPanel>

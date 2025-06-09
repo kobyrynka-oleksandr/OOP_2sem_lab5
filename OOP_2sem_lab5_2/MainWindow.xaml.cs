@@ -24,6 +24,7 @@ namespace OOP_2sem_lab5_2
         private int threadCount = Environment.ProcessorCount;
         private readonly object drawLock = new object();
         private Dictionary<Point, Color> siteColors = new Dictionary<Point, Color>();
+        private Dictionary<Point, int> sitePixelCounts = new Dictionary<Point, int>();
 
         public MainWindow()
         {
@@ -86,6 +87,19 @@ namespace OOP_2sem_lab5_2
             else
                 RunVoronoiSingleThreaded();
         }
+
+        private void BtnRemoveSmallest_Click(object sender, RoutedEventArgs e)
+        {
+            CalculatePixelCounts();
+            RemoveSitesWithSmallestLocus(10);
+            DrawSites();
+
+            if (multiThreaded)
+                RunVoronoiMultiThreaded();
+            else
+                RunVoronoiSingleThreaded();
+        }
+
 
         private void CheckBoxMultiThread_Checked(object sender, RoutedEventArgs e) => multiThreaded = true;
 
@@ -235,6 +249,43 @@ namespace OOP_2sem_lab5_2
             }
 
             return nearest;
+        }
+        private void CalculatePixelCounts()
+        {
+            sitePixelCounts.Clear();
+            int width = (int)canvas.Width;
+            int height = (int)canvas.Height;
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    Point pt = new Point(x, y);
+                    var nearest = GetNearestSite(pt);
+                    if (sitePixelCounts.ContainsKey(nearest))
+                        sitePixelCounts[nearest]++;
+                    else
+                        sitePixelCounts[nearest] = 1;
+                }
+            }
+        }
+        private void RemoveSitesWithSmallestLocus(double percentage)
+        {
+            if (sitePixelCounts.Count == 0) return;
+
+            int numToRemove = (int)(sitePixelCounts.Count * percentage / 100.0);
+            if (numToRemove <= 0) return;
+
+            var toRemove = sitePixelCounts.OrderBy(kv => kv.Value)
+                                          .Take(numToRemove)
+                                          .Select(kv => kv.Key)
+                                          .ToList();
+
+            foreach (var p in toRemove)
+            {
+                sites.Remove(p);
+                siteColors.Remove(p);
+            }
         }
     }
 }
