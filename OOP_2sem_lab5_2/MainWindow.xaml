@@ -5,16 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OOP_2sem_lab5_2"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="700" Width="900">
     <Grid>
-        <Canvas Name="canvas" Width="600" Height="600"
+        <Image Name="image" Width="550" Height="550" Margin="0,0,0,0" Panel.ZIndex="0"/>
+        <Canvas Name="canvas" Width="550" Height="550"
                 MouseLeftButtonDown="canvas_MouseLeftButtonDown"
-                MouseRightButtonDown="canvas_MouseRightButtonDown"/>
-        <Image Name="image" Width="600" Height="600" Margin="0,0,0,0"/>
+                MouseRightButtonDown="canvas_MouseRightButtonDown"
+                Background="Transparent"
+                Panel.ZIndex="1"/>
+
         <StackPanel Orientation="Vertical" HorizontalAlignment="Right" Margin="610,10,10,10">
+            <TextBlock Text="Кількість точок:"/>
+            <TextBox x:Name="NumOfPoints"/>
             <Button Content="Генерувати" Click="BtnGenerateRandom_Click"/>
             <Button Content="Побудувати" Click="BtnVoronoi_Click"/>
             <CheckBox Content="Багатопотоковість" Checked="CheckBoxMultiThread_Checked" Unchecked="CheckBoxMultiThread_Unchecked"/>
+            <TextBlock Name="textBlockTime" Margin="0,10,0,0" FontWeight="Bold" TextWrapping="Wrap"/>
         </StackPanel>
     </Grid>
 </Window>
